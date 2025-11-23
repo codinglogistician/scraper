@@ -3,6 +3,7 @@ import csv
 from bs4 import BeautifulSoup
 import time
 import argparse
+import os
 
 # Stałe
 BASE_URL = 'https://adresowo.pl'
@@ -144,6 +145,11 @@ def main(city, pages, output_file):
     if all_data:
         print(f"\nZakończono scraping. Zapisywanie {len(all_data)} ogłoszeń do pliku {output_file}...")
         try:
+            # Tworzymy katalog, jeśli nie istnieje
+            output_dir = os.path.dirname(output_file)
+            if output_dir:
+                os.makedirs(output_dir, exist_ok=True)
+            
             with open(output_file, 'w', newline='', encoding='utf-8') as f:
                 writer = csv.writer(f)
                 writer.writerow(CSV_HEADERS)  # Zapis nagłówka
@@ -199,8 +205,6 @@ Przykłady użycia:
     if args.output:
         output_file = args.output
     else:
-        import os
-        os.makedirs('scraper/data', exist_ok=True)
-        output_file = f'scraper/data/ogloszenia_{args.city}.csv'
+        output_file = f'data/ogloszenia_{args.city}.csv'
     
     main(args.city, args.pages, output_file)
